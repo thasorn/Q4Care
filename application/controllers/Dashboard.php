@@ -26,8 +26,8 @@ class Dashboard extends CI_Controller {
 	public function queing()
 	{
 		$this->load->model('Queue', 'que', FALSE);
-		$dep = 1;
+		$dep = $this->que->getDep();
 		$arr['queNumber'] = $this->que->getQueue($dep);
-		$this->load->view('frontend/que', $arr);
+		$this->load->view('frontend/queue', $arr);
 	}
 }

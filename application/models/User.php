@@ -62,7 +62,7 @@ class User extends CI_Model {
   private function setSession($sessionName, $data) // set session fron data
   {
     $sessionData = $data->result_array();
-    $this->session->set_userdata($sessionName, $sessioData[0]);
+    $this->session->set_userdata($sessionName, $sessionData[0]);
   }
 
   public function checkSession($dest) // Check session function. this can use every page in website.

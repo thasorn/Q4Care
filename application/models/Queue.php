@@ -76,20 +76,41 @@ class Queue extends CI_Model {
   public function getQueue($dep_id){
     $counter = 0;
     $user = $this->session->userdata("user");
+    $this->load->database();
     $this->db->from("userque");
     $this->db->where('dep_id', $dep_id);
     $this->db->where('called', NULL);
     $this->db->where('time >', date('Y-m-d H:i:s'));
+    $this->db->order_by('time', 'asc');
     $data = $this->db->get();
+    $this->db->close();
     if ($data->num_rows() > 0){
       foreach ($data->result_array() as $row) {
-        if (strcmp($user['id'], $row['user_id'])) {
+        if ($user['id'] == $row['user_id']) {
           break;
         }
         $counter++;
       }
     }
     return $counter;
+  }
+
+  public function getDep(){
+    $user = $this->session->userdata("user");
+    $this->load->database();
+    $this->db->from("userque");
+    $this->db->where('user_id', $user['id']);
+    $this->db->where('called', NULL);
+    $this->db->where('time >', date('Y-m-d H:i:s'));
+    $this->db->order_by('time', 'asc');
+    $data = $this->db->get();
+    $this->db->close();
+    if ($data->num_rows() > 0){
+      foreach ($data->result_array() as $row) {
+        $dep = $row['dep_id'];
+        return $dep;
+      }
+    }
   }
 
 }

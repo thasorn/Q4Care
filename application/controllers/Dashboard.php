@@ -22,4 +22,12 @@ class Dashboard extends CI_Controller {
 	{
     echo "Login Success!!!";
 	}
+
+	public function queing()
+	{
+		$this->load->model('Queue', 'que', FALSE);
+		$dep = 1;
+		$arr['queNumber'] = $this->que->getQueue($dep);
+		$this->load->view('frontend/que', $arr);
+	}
 }

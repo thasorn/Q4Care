@@ -50,6 +50,7 @@ defined('FOPEN_READ_WRITE_CREATE_STRICT')       OR define('FOPEN_READ_WRITE_CREA
 
 $root_dir = list($root_dir, $sub_dir) = explode('application', dirname(__FILE__));
 define('ROOT_DIR',$root_dir[0]);
+define('APP_MAIL', '58070115@kmitl.ac.th');
 /*
 |--------------------------------------------------------------------------
 | Exit Status Codes

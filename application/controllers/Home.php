@@ -18,10 +18,6 @@ class Home extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/user_guide/general/urls.html
 	 */
-	public function index()
-	{
-		$this->load->view('frontend/home');
-	}
 
   public function login()
   {
@@ -37,36 +33,13 @@ class Home extends CI_Controller {
     $username = $this->input->post('username');
     $password = $this->input->post('password');
     $this->load->model('User', 'user', FALSE);
-    /*if (!$this->user->login($username, $password)){
-    	redirect(base_url().'Home/login');
-    } else {
-			redirect(base_url().'Dashboard');
-    }*/
 		(!$this->user->login($username, $password)) ? redirect(base_url().'Home/login'): redirect(base_url().'Dashboard');
   }
 
-	public function register()
-	{
-		$this->load->view('frontend/register');
-	}
+  public function logout()
+  {
+    $this->session->sess_destroy();
+    redirect(base_url());
+  }
 
-	public function registering()
-	{
-		$data = array(
-			'fname' => $this->input->post('fname'),
-			'lname' => $this->input->post('lname'),
-			'email' => $this->input->post('email'),
-			'username' => $this->input->post('email'),
-			'password' => $this->input->post('password'),
-		);
-		$confirm = $this->input->post('confirm');
-		if ($confirm != $data['password']){
-			echo "<script type=\"text/javascript\">alert('Invalid confirm password');</scirpt>";
-			redirect(base_url().'Home/register');
-		}
-
-		$this->load->model('User', 'user', FALSE);
-		$this->user->register($data);
-		redirect(base_url().'Home/login');
-	}
 }

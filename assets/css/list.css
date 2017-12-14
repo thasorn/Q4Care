@@ -1,0 +1,10 @@
+.table-sortable tbody tr {
+cursor: move;
+}
+input.add {
+-moz-border-radius: 4px;
+border-radius: 4px;
+background-color:#6FFF5C;
+-moz-box-shadow: 0 0 4px rgba(0, 0, 0, .75);
+box-shadow: 0 0 4px rgba(0, 0, 0, .75);
+}

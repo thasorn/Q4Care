@@ -7,7 +7,7 @@ class User extends CI_Model {
     parent::__construct();
   }
 
-  private function getRecord($table ,$condition, $attributes=NULL) // Get row from Database.
+  private function getRecord($table ,$condition=NULL, $attributes=NULL) // Get row from Database.
   {
     $this->load->database();
     if (isset($attributes)){
@@ -15,7 +15,7 @@ class User extends CI_Model {
       $this->db->select($selectString);
     }
     $this->db->from($table);
-    $this->db->where($condition);
+    (empty($condition))?:$this->db->where($condition);
     $row = $this->db->get();
     $this->db->close();
     return $row;
@@ -65,6 +65,49 @@ class User extends CI_Model {
     $this->session->set_userdata($sessionName, $sessionData[0]);
   }
 
+  private function getAllTable()
+  {
+    $tables = $this->db->list_tables();
+    return $tables;
+  }
+
+  private function getTable($attr)
+  {
+    $this->load->database();
+    $tables = $this->getAllTable();
+    $tableName = FALSE;
+    foreach ($tables as $table) {
+      $fields = $this->db->field_data($table);
+      foreach ($fields as $field) {
+        if ($field->name == $attr){
+          $tableName = strtoupper($table);
+          break;
+        }
+      }
+      if ($tableName){
+        break;
+      }
+      $this->db->close();
+    } return $tableName;
+  }
+
+  //Return True if value is exist in database
+  public function isExist($attr, $value, $table=NULL, $session=FALSE)
+  {
+    if ($table == NULL){
+      $table = $this->getTable($attr);
+    }
+    $result = $this->getRecord($table, array($attr => $value));
+    if ($session){
+      $user = $this->session->userdata("user");
+      foreach ($result->result_array() as $row)
+      if ($row['email'] == $user['email'] && $row['username'] == $user['username']){
+        return FALSE;
+      }
+    }
+    return ($result->num_rows() > 0);
+  }
+
   public function checkSession($dest) // Check session function. this can use every page in website.
   {
     if ($this->session->userdata("user") == null){
@@ -82,14 +125,42 @@ class User extends CI_Model {
     $data = $this->getRecord('UserInfo', $condition);
     if ($data->num_rows() > 0){
       $this->setSession('user', $data);
-      return TRUE;
     }
-    return FALSE;
+    return ($data->num_rows() > 0);
   }
 
   public function register($data)
   {
     return $this->insertRecord('UserInfo', $data);
+  }
+
+  public function findEmail($email)
+  {
+    $email = strtolower($email);
+    return $this->isExist("email", $email, "UserInfo", !empty($this->session->userdata("user")));
+  }
+
+  public function findUsername($username)
+  {
+    $username = strtolower($username);
+    return $this->isExist("username", $username, "UserInfo", !empty($this->session->userdata("user")));
+  }
+
+  public function editAccount($data)
+  {
+    $user = $this->session->userdata("user");
+    $cond = array(
+      'email' => $user['email']
+    );
+    $this->updateRecord('UserInfo', $data, $cond);
+  }
+
+  public function test()
+  {
+    //Code Here
+    $email = '58070115@it.kmitl.ac.th';
+    echo $email." : ";
+    echo $this->findEmail($email);
   }
 
 }
